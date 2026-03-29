@@ -1,1 +1,0 @@
-kun.uz sahifasini nusxasi
