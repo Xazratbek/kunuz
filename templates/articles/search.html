@@ -1,0 +1,180 @@
+{% extends "base.html" %}
+{% block title %}Qidiruv natijalari{% endblock %}
+{% block content %}
+<div class="search-section">
+    <div class="search-header">
+        <h1 class="search-title">Maqolalarni Qidirish</h1>
+        <p class="search-subtitle">Yangi qidiruv bajaramiz</p>
+
+        <!-- Refined Search Form -->
+        <form action="{% url 'search' %}" method="get" class="refined-search">
+            <div class="search-box">
+                <input
+                    type="search"
+                    name="q"
+                    placeholder="Maqola nomi, muallif yoki tag bo'yicha qidirib topish..."
+                    value="{{ request.GET.q }}"
+                    required
+                />
+                <button type="submit" title="Qidirish">🔍</button>
+            </div>
+        </form>
+    </div>
+
+    {% if articles %}
+        <div class="search-results-header">
+            <p class="result-count">{{ articles|length }} ta maqola topildi</p>
+            {% if request.GET.q %}
+                <p class="search-query">"<strong>{{ request.GET.q }}</strong>" bo'yicha</p>
+            {% endif %}
+        </div>
+
+        <div class="articles-grid">
+            {% for article in articles %}
+                <article class="article-card">
+                    <div class="card-header">
+                        <span class="category-tag">{{ article.category.name }}</span>
+                    </div>
+                    <h3 class="card-title">
+                        <a href="{% url 'article-detail' article.slug %}">{{ article.title }}</a>
+                    </h3>
+                    <div class="card-meta">
+                        <span>{{ article.author }}</span>
+                        <span>{{ article.created_at|date:"d.m.Y" }}</span>
+                    </div>
+                    <a href="{% url 'article-detail' article.slug %}" class="card-link">
+                        O'qish →
+                    </a>
+                </article>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="no-articles">
+            <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="margin-bottom: 20px; opacity: 0.4;">
+                <circle cx="11" cy="11" r="8"></circle>
+                <path d="m21 21-4.35-4.35"></path>
+            </svg>
+            <h2>Qidirish bo'yicha hech narsa topilmadi</h2>
+            <p style="font-size: 15px; margin-top: 12px; color: var(--text-muted);">
+                {% if request.GET.q %}"<strong>{{ request.GET.q }}</strong>"{% endif %} bo'yicha maqolalar topilmadi
+            </p>
+            <p style="font-size: 14px; margin-top: 8px; color: var(--text-muted);">
+                Boshqa kalit so'zlar bilan yoki barcha maqolalarni <a href="{% url 'article-list' %}" style="color: var(--accent);">ko'rish</a> uchun bosing
+            </p>
+        </div>
+    {% endif %}
+</div>
+
+<style>
+    .search-section {
+        animation: fadeIn 0.6s ease;
+    }
+
+    .search-header {
+        text-align: center;
+        margin-bottom: 40px;
+    }
+
+    .search-title {
+        font-size: 36px;
+        font-weight: 700;
+        margin-bottom: 8px;
+        background: linear-gradient(135deg, var(--text-main), var(--accent));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .search-subtitle {
+        color: var(--text-muted);
+        font-size: 16px;
+        margin-bottom: 24px;
+    }
+
+    .refined-search {
+        max-width: 600px;
+        margin: 0 auto;
+    }
+
+    .search-box {
+        display: flex;
+        gap: 8px;
+        background: var(--bg-glass);
+        padding: 8px;
+        border-radius: 12px;
+        border: 1px solid var(--border);
+        transition: all 0.3s ease;
+    }
+
+    .search-box:focus-within {
+        border-color: var(--accent);
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+
+    .search-box input {
+        flex: 1;
+        background: transparent;
+        border: none;
+        color: var(--text-main);
+        font-size: 15px;
+        padding: 10px 12px;
+    }
+
+    .search-box input::placeholder {
+        color: var(--text-muted);
+    }
+
+    .search-box input:focus {
+        outline: none;
+    }
+
+    .search-box button {
+        padding: 8px 16px;
+        background: var(--accent);
+        border: none;
+        border-radius: 8px;
+        color: white;
+        cursor: pointer;
+        font-size: 16px;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 44px;
+    }
+
+    .search-box button:hover {
+        background: #1d4ed8;
+        transform: scale(1.05);
+    }
+
+    .search-results-header {
+        text-align: center;
+        margin-bottom: 32px;
+        padding-bottom: 24px;
+        border-bottom: 1px solid var(--border);
+    }
+
+    .result-count {
+        font-size: 16px;
+        font-weight: 600;
+        color: var(--accent);
+        margin-bottom: 8px;
+    }
+
+    .search-query {
+        font-size: 14px;
+        color: var(--text-muted);
+    }
+
+    .search-query strong {
+        color: var(--text-main);
+    }
+
+    .no-articles h2 {
+        font-size: 24px;
+        color: var(--text-main);
+        margin-bottom: 8px;
+    }
+</style>
+{% endblock content %}

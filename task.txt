@@ -1,0 +1,241 @@
+Yaxshi. Endi hamma keraksiz narsani kesamiz. Bu — **1 odamlik, faqat Django CRUD bilan ishlaydigan aniq TZ**.
+
+---
+
+# 🎯 LOYIHA
+
+👉 **Kun.uz clone (ENG SODDA MVP)**
+
+### QOIDALAR:
+
+* ❌ API yo‘q
+* ❌ DRF yo‘q
+* ❌ Redis yo‘q
+* ❌ Celery yo‘q
+* ❌ murakkablik yo‘q
+
+👉 Faqat:
+**Django (models + forms + views + templates)**
+
+---
+
+# 🧠 UMUMIY TUSHUNCHA
+
+Siz bitta web sayt qilasiz:
+
+### 1. Admin panel
+
+→ maqola yozish
+
+### 2. Oddiy frontend (template bilan)
+
+→ user maqolani o‘qiydi
+
+---
+
+# 🧱 NIMALAR BO‘LISHI SHART
+
+---
+
+# 📌 1. MODELLAR (CORE)
+
+## Category
+
+```python
+name
+parent (self, null=True)
+---
+
+## Article
+
+title
+slug
+content
+category (FK)
+author (FK → User)
+status (draft/published)
+created_at
+---
+
+## Tag
+
+name
+---
+
+## ArticleTag
+
+article (FK)
+tag (FK)
+---
+
+## 🔥 (OPTIONAL LEKIN KUCHLI) — ArticleTranslation
+
+article (FK)
+language (uz/ru/en)
+title
+content
+👉 Agar bunga kuching yetmasa:
+→ tashlab ket, keyin qo‘shasan
+
+---
+
+# 📌 2. SLUG LOGIC (MUHIM)
+
+hello world → hello-world
+👉 unique bo‘lishi shart
+
+---
+
+# 📌 3. FORMALAR
+
+## ArticleForm
+
+* title
+* content
+* category
+* status
+
+---
+
+## CategoryForm
+
+* name
+* parent
+
+---
+
+## TagForm
+
+* name
+
+---
+
+👉 oddiy ModelForm ishlat
+
+---
+
+# 📌 4. VIEWLAR (CRUD)
+
+👉 hammasi function-based view bo‘lsin (osonroq)
+
+---
+
+## 📰 ARTICLE
+
+### List
+
+/articles/
+* faqat published chiqadi
+
+---
+
+### Detail
+
+/articles/<slug>/
+---
+
+### Create
+
+/articles/create/
+---
+
+### Update
+
+/articles/<id>/edit/
+---
+
+### Delete
+
+/articles/<id>/delete/
+---
+
+## 📂 CATEGORY
+
+/categories/
+---
+
+## 🔎 SEARCH (oddiy)
+
+?q=iphone
+Article.objects.filter(title__icontains=q)
+---
+
+## 📌 RELATED ARTICLES
+
+Detail sahifada:
+
+Article.objects.filter(category=article.category).exclude(id=article.id)[:5]
+---
+
+# 📌 5. TEMPLATE (SODDA)
+
+Minimal:
+
+## pages:
+
+* homepage (articles list)
+* article detail
+* create/edit form
+
+---
+
+# 📌 6. QOIDALAR
+
+## ❗ 1. Faqat published chiqadi
+
+Article.objects.filter(status="published")
+---
+
+## ❗ 2. Login bo‘lgan usergina create qiladi
+
+request.user
+---
+
+## ❗ 3. Slug orqali ochiladi
+
+/articles/iphone-15/
+---
+
+# 🌍 MULTILANGUAGE (SODDA)
+
+Agar qilmoqchi bo‘lsang:
+
+---
+
+## MODEL
+
+class ArticleTranslation(models.Model):
+    article = ForeignKey(Article)
+    language = CharField()  # uz / ru / en
+    title = CharField()
+    content = TextField()
+---
+
+## VIEWDA
+
+lang = request.GET.get("lang", "uz")
+
+translation = article.translations.filter(language=lang).first()
+
+if not translation:
+    translation = article.translations.filter(language="uz").first()
+---
+
+## TEMPLATE
+
+<h1>{{ translation.title }}</h1>
+<p>{{ translation.content }}</p>
+---
+
+# ⚡ FINAL CHECKLIST (SEN BAJARISHING KERAK)
+
+* [ ] Category model ishlaydi
+* [ ] Article model ishlaydi
+* [ ] Slug auto generate
+* [ ] Article CRUD ishlaydi
+* [ ] Faqat published chiqadi
+* [ ] Detail page ishlaydi
+* [ ] Search ishlaydi
+* [ ] Related articles chiqadi
+* [ ] Template bor
+`

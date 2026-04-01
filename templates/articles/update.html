@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+{% block title %}Maqolani tahrirlash{% endblock %}
+{% block content %}
+<div class="form-container">
+    <div class="form-header">
+        <h1>Maqolani tahrirlash</h1>
+        <p>{{ article.title }}</p>
+    </div>
+
+    <form action="" method="post" class="article-form">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="{{ form.title.id_for_label }}">Sarlavha</label>
+            {{ form.title }}
+            {% if form.title.errors %}
+                <span class="form-error">{{ form.title.errors }}</span>
+            {% endif %}
+        </div>
+
+        <div class="form-group">
+            <label for="{{ form.category.id_for_label }}">Kategoriya</label>
+            {{ form.category }}
+            {% if form.category.errors %}
+                <span class="form-error">{{ form.category.errors }}</span>
+            {% endif %}
+        </div>
+
+        <div class="form-group">
+            <label for="{{ form.author.id_for_label }}">Muallif</label>
+            {{ form.author }}
+            {% if form.author.errors %}
+                <span class="form-error">{{ form.author.errors }}</span>
+            {% endif %}
+        </div>
+
+        <div class="form-group">
+            <label for="{{ form.status.id_for_label }}">Holati</label>
+            {{ form.status }}
+            {% if form.status.errors %}
+                <span class="form-error">{{ form.status.errors }}</span>
+            {% endif %}
+        </div>
+
+        <div class="form-group">
+            <label for="{{ form.content.id_for_label }}">Maqola matni</label>
+            {{ form.content }}
+            {% if form.content.errors %}
+                <span class="form-error">{{ form.content.errors }}</span>
+            {% endif %}
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">O'zgarishlarni saqlash</button>
+            <a href="{% url 'article-detail' article.slug %}" class="btn btn-secondary">Bekor qilish</a>
+        </div>
+    </form>
+</div>
+
+<style>
+    .form-actions {
+        display: flex;
+        gap: 12px;
+        margin-top: 24px;
+    }
+
+    .btn-secondary {
+        background: transparent;
+        border: 1px solid var(--border);
+        color: var(--text-muted);
+        display: inline-block;
+        padding: 12px 24px;
+        text-align: center;
+        transition: all 0.3s ease;
+    }
+
+    .btn-secondary:hover {
+        border-color: var(--accent);
+        color: var(--accent);
+        background: rgba(37, 99, 235, 0.1);
+    }
+
+    @media (max-width: 768px) {
+        .form-actions {
+            flex-direction: column;
+        }
+
+        .btn {
+            width: 100%;
+        }
+    }
+</style>
+{% endblock content %}

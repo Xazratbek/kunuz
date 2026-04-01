@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% load custom_filters %}
+{% block title %}{{ category.name }} - Maqolalar{% endblock %}
+{% block content %}
+<div class="category-section">
+    <div class="category-header">
+        <h1 class="category-title">{{ category.name }}</h1>
+        <p class="category-count">{{ news|length }} ta maqola</p>
+    </div>
+
+    {% if news %}
+        <div class="articles-grid">
+            {% for article in news %}
+                <article class="article-card">
+                    <div class="card-header">
+                        <span class="category-tag">{{ article.category.name }}</span>
+                    </div>
+                    <h3 class="card-title">
+                        <a href="{% url 'article-detail' article.slug %}">{{ article.title }}</a>
+                    </h3>
+                    {% if article.content %}
+                        <p class="card-excerpt">
+                            {{ article.content | strip_html_and_media:200 }}
+                        </p>
+                    {% endif %}
+                    <div class="card-meta">
+                        <span>{{ article.author }}</span>
+                        <span>{{ article.created_at|date:"d.m.Y" }}</span>
+                    </div>
+                    <a href="{% url 'article-detail' article.slug %}" class="card-link">
+                        O'qish →
+                    </a>
+                </article>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="no-articles">
+            <p>Bu kategoriyada maqolalar hali qo'shilmagan</p>
+        </div>
+    {% endif %}
+</div>
+
+<style>
+    .category-section {
+        animation: fadeIn 0.6s ease;
+    }
+
+    .category-header {
+        margin-bottom: 40px;
+        padding-bottom: 24px;
+        border-bottom: 1px solid var(--border);
+    }
+
+    .category-title {
+        font-size: 36px;
+        font-weight: 700;
+        margin-bottom: 8px;
+        color: var(--text-main);
+    }
+
+    .category-count {
+        color: var(--text-muted);
+        font-size: 14px;
+    }
+
+    .card-excerpt {
+        font-size: 14px;
+        color: var(--text-muted);
+        line-height: 1.6;
+        margin-bottom: 12px;
+    }
+</style>
+{% endblock content %}

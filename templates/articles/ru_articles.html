@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+{% block title %}Русские статьи{% endblock %}
+{% block content %}
+<div class="translation-section">
+    <div class="translation-header">
+        <h1 class="translation-title">Русские статьи</h1>
+        <p class="translation-desc">Все новости на русском языке</p>
+    </div>
+
+    {% if articles %}
+        <p class="result-count">{{ articles|length }} статей найдено</p>
+        <div class="articles-grid">
+            {% for article in articles %}
+                <article class="article-card">
+                    <div class="card-header">
+                        <span class="category-tag">{{ article.article.category.name }}</span>
+                        <span class="lang-badge">🌐 Русский</span>
+                    </div>
+                    <h3 class="card-title">
+                        <a href="{% url 'article-translation-detail' article.language article.slug %}">{{ article.title }}</a>
+                    </h3>
+                    <div class="card-meta">
+                        <span>{{ article.article.author }}</span>
+                        <span>{{ article.article.created_at|date:"d.m.Y" }}</span>
+                    </div>
+                    <a href="{% url 'article-translation-detail' article.language article.slug %}" class="card-link">
+                        Читать →
+                    </a>
+                </article>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="no-articles">
+            <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="margin-bottom: 16px; opacity: 0.5;">
+                <circle cx="11" cy="11" r="8"></circle>
+                <path d="m21 21-4.35-4.35"></path>
+            </svg>
+            <p>Статьей на русском языке не найдено</p>
+        </div>
+    {% endif %}
+</div>
+
+<style>
+    .translation-section {
+        animation: fadeIn 0.6s ease;
+    }
+
+    .translation-header {
+        margin-bottom: 40px;
+        text-align: center;
+    }
+
+    .translation-title {
+        font-size: 36px;
+        font-weight: 700;
+        margin-bottom: 12px;
+        color: var(--text-main);
+    }
+
+    .translation-desc {
+        color: var(--text-muted);
+        font-size: 16px;
+    }
+
+    .result-count {
+        text-align: center;
+        color: var(--text-muted);
+        font-size: 14px;
+        margin-bottom: 24px;
+    }
+
+    .lang-badge {
+        display: inline-block;
+        background: rgba(59, 130, 246, 0.2);
+        color: #60a5fa;
+        padding: 3px 10px;
+        border-radius: 4px;
+        font-size: 11px;
+        font-weight: 600;
+        margin-left: 8px;
+    }
+</style>
+{% endblock content %}
