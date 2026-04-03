@@ -11,7 +11,22 @@ SECRET_KEY = 'django-insecure-%owe3pvpkti=ms&rd2zhuqme)dgid3-rn4$(jsas967y%@a_1k
 
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:8000",
+    "https://7d05-213-230-91-82.ngrok-free.app"
+]
+
+CORS_ALLOW_ALL_ORIGINS = True
+
+CSRF_TRUSTED_ORIGINS = [
+    "http://localhost:8000",
+    "https://7d05-213-230-91-82.ngrok-free.app",
+    "https://*.ngrok-free.app",
+    "https://*.ngrok.io",
+]
+
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -20,15 +35,20 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'crispy_forms',
+    'crispy_bootstrap5',
+    "corsheaders",
     'news',
-
+    'accounts',
     'django_ckeditor_5',
 
 ]
 
 MIDDLEWARE = [
+    "corsheaders.middleware.CorsMiddleware",
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -90,7 +110,17 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/6.0/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'uz'
+
+LANGUAGES = [
+    ('uz', 'O\'zbekcha'),
+    ('ru', 'Ruscha'),
+    ('en', 'Inglizcha'),
+]
+
+LOCALE_PATHS = [
+    BASE_DIR / 'locale',
+]
 
 TIME_ZONE = 'UTC'
 
@@ -117,14 +147,20 @@ CKEDITOR_5_CONFIGS = {
             '|', 'bulletedList', 'numberedList',
             '|', 'blockQuote',
         ],
-        'toolbar': ['heading', '|', 'outdent', 'indent', '|', 'bold', 'italic', 'link', 'underline', 'strikethrough',
-        'code','subscript', 'superscript', 'highlight', '|', 'codeBlock', 'sourceEditing', 'insertImage',
-                    'bulletedList', 'numberedList', 'todoList', '|',  'blockQuote', 'imageUpload', '|',
-                    'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor', 'mediaEmbed', 'removeFormat',
-                    'insertTable',],
+        'toolbar': ['undo', 'redo', '|', 'heading', '|', 'outdent', 'indent', '|', 'bold', 'italic', 'link',
+                    'underline', 'strikethrough', 'code', 'subscript', 'superscript', 'highlight', '|',
+                    'codeBlock', 'sourceEditing', 'insertImage', 'insertTable', '|',
+                    'bulletedList', 'numberedList', 'todoList', '|', 'blockQuote', 'imageUpload', 'mediaEmbed', '|',
+                    'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor', 'removeFormat',
+                    'alignment', 'horizontalLine', 'pageBreak'],
         'image': {
             'toolbar': ['imageTextAlternative', '|', 'imageStyle:alignLeft',
-                        'imageStyle:alignCenter', 'imageStyle:alignRight', 'imageStyle:fullWidth']
+                        'imageStyle:alignCenter', 'imageStyle:alignRight', 'imageStyle:fullWidth', '|',
+                        'linkImage', 'imageInsert'],
+            'styles': [
+                'full',
+                'side'
+            ]
         },
         'mediaEmbed': {
             'previewsInData': True,
@@ -165,3 +201,16 @@ EMAIL_HOST_PASSWORD = 'qvqn blcp wrnq orkt'
 DEFAULT_FROM_EMAIL = 'xazratbek123@gmail.com'
 
 EMAIL_SSL_CONTEXT = ssl._create_unverified_context()
+
+DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+AUTH_USER_MODEL = "accounts.CustomUser"
+
+LOGIN_REDIRECT_URL = "article-list"
+LOGOUT_REDIRECT_URL = "article-list"
+
+# Password Reset
+PASSWORD_RESET_TIMEOUT = 3600  # 1 hour in seconds
+
+CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
+CRISPY_TEMPLATE_PACK = "bootstrap5"

@@ -98,6 +98,125 @@
             width: 100%;
         }
 
+        /* Language Switcher */
+        .language-switcher {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .language-switcher a {
+            font-size: 12px;
+            color: var(--text-muted);
+            padding: 4px 8px;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+        }
+
+        .language-switcher a:hover {
+            background: rgba(37, 99, 235, 0.2);
+            color: var(--accent);
+        }
+
+        /* Auth Buttons */
+        .btn-small {
+            font-size: 13px;
+            padding: 8px 12px;
+            background: rgba(37, 99, 235, 0.15);
+            border-radius: 6px;
+            border: 1px solid rgba(37, 99, 235, 0.3);
+            transition: all 0.3s ease;
+            color: var(--accent);
+        }
+
+        .btn-small:hover {
+            background: rgba(37, 99, 235, 0.25);
+            border-color: rgba(37, 99, 235, 0.6);
+        }
+
+        .btn-auth {
+            padding: 8px 14px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            border: none;
+        }
+
+        .btn-login {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+        }
+
+        .btn-login:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+            background: rgba(37, 99, 235, 0.1);
+        }
+
+        .btn-signup {
+            background: linear-gradient(135deg, var(--accent), #1d4ed8);
+            color: white;
+            border: none;
+        }
+
+        .btn-signup:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(37, 99, 235, 0.3);
+        }
+
+        /* User Menu */
+        .user-menu {
+            position: relative;
+        }
+
+        .user-btn {
+            background: rgba(37, 99, 235, 0.2);
+            border: none;
+            color: var(--accent);
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .user-btn:hover {
+            background: rgba(37, 99, 235, 0.3);
+        }
+
+        .dropdown-menu {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: var(--bg-main);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            min-width: 150px;
+            margin-top: 8px;
+            display: none;
+            z-index: 1001;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .dropdown-menu.active {
+            display: block;
+        }
+
+        .dropdown-menu a {
+            display: block;
+            padding: 10px 14px;
+            color: var(--text-muted);
+            transition: all 0.2s ease;
+        }
+
+        .dropdown-menu a:hover {
+            background: rgba(37, 99, 235, 0.2);
+            color: var(--accent);
+        }
+
         /* SUB NAV */
         .sub-nav {
             display: flex;
@@ -712,6 +831,79 @@
             }
         }
 
+        /* RELATED ARTICLES */
+        .related-articles {
+            margin-top: 60px;
+            padding-top: 40px;
+            border-top: 2px solid var(--border);
+        }
+
+        .related-title {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 24px;
+            color: var(--text-main);
+        }
+
+        .related-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        .related-card {
+            background: var(--bg-glass);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 16px;
+            transition: all 0.3s ease;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .related-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(37, 99, 235, 0.1), transparent);
+            transition: left 0.5s ease;
+            pointer-events: none;
+        }
+
+        .related-card:hover::before {
+            left: 100%;
+        }
+
+        .related-card:hover {
+            border-color: var(--accent);
+            transform: translateY(-4px);
+            box-shadow: 0 12px 30px rgba(37, 99, 235, 0.15);
+        }
+
+        .related-card-title {
+            font-size: 15px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            line-height: 1.4;
+            color: var(--text-main);
+        }
+
+        .related-card-title a {
+            transition: color 0.3s ease;
+        }
+
+        .related-card-title a:hover {
+            color: var(--accent);
+        }
+
+        .related-card-meta {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
         /* RESPONSIVE */
         @media (max-width: 768px) {
             .articles-grid {
@@ -783,11 +975,38 @@
             </div>
 
             <div class="nav-links">
-                <a href="{% url "article-list" %}">🌐 O‘zbekcha</a>
-                <a href="{% url 'article-translaations-ru' 'ru' %}">🌐 Ruscha</a>
-                <a href="{% url 'article-create' %}">Maqola qo'shish</a>
+                <!-- Language Switcher -->
+                <div class="language-switcher">
+                    <form action="{% url 'set_language' %}" method="post" style="display: inline;" id="lang-form">
+                        {% csrf_token %}
+                        <input type="hidden" name="language" id="lang-input" value="">
+                    </form>
+                    <a href="#" onclick="changeLang('uz'); return false;">🌐 O'z</a>
+                    <a href="#" onclick="changeLang('ru'); return false;">🌐 Ru</a>
+                    <a href="#" onclick="changeLang('en'); return false;">🌐 En</a>
+                </div>
+
+                <!-- Add Article Button -->
+                {% if user.is_authenticated %}
+                    <a href="{% url 'article-create' %}" class="btn-small">✍️ Article</a>
+                {% endif %}
+
+                <!-- Search -->
                 <button class="search-icon-btn" id="searchToggle" title="Qidirish" type="button">🔍</button>
-                <a href="#">☰</a>
+
+                <!-- User Menu / Auth Buttons -->
+                {% if user.is_authenticated %}
+                    <div class="user-menu">
+                        <button class="user-btn" id="userMenuBtn">👤 {{ user.username }}</button>
+                        <div class="dropdown-menu" id="userDropdown">
+                            <a href="{% url 'password_change' %}">🔐 Parol o'zgartirish</a>
+                            <a href="{% url 'logout' %}">🚪 Chiqish</a>
+                        </div>
+                    </div>
+                {% else %}
+                    <a href="{% url 'login' %}" class="btn-auth btn-login">Kirish</a>
+                    <a href="{% url 'signup' %}" class="btn-auth btn-signup">Ro'yxat</a>
+                {% endif %}
             </div>
         </div>
 
@@ -855,6 +1074,29 @@
                 this.form.submit();
             }
         });
+
+        // User Menu Toggle
+        const userMenuBtn = document.getElementById('userMenuBtn');
+        const userDropdown = document.getElementById('userDropdown');
+
+        if (userMenuBtn) {
+            userMenuBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                userDropdown.classList.toggle('active');
+            });
+
+            document.addEventListener('click', function(e) {
+                if (!userMenuBtn.contains(e.target) && !userDropdown.contains(e.target)) {
+                    userDropdown.classList.remove('active');
+                }
+            });
+        }
+
+        // Language Switcher
+        function changeLang(lang) {
+            document.getElementById('lang-input').value = lang;
+            document.getElementById('lang-form').submit();
+        }
     </script>
 
 </body>

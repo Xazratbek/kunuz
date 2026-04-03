@@ -7,6 +7,7 @@ from django.core.mail import send_mail
 from django.contrib import messages
 from django.db.models import Q
 from django.conf import settings
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 
 class EmailSendView(View):
     def get(self, request):
@@ -62,7 +63,7 @@ class ArticleListView(View):
             "category_articles": category_articles,
         })
 
-class ArticleCreateView(View):
+class ArticleCreateView(LoginRequiredMixin,View):
     def get(self, request):
         form = ArticleForm()
         return render(request, "articles/create.html",context={"form": form})
@@ -70,34 +71,60 @@ class ArticleCreateView(View):
     def post(self, request):
         form = ArticleForm(request.POST, request.FILES)
         if form.is_valid():
-            form.save()
+            article = form.save(commit=False)
+            article.author = request.user
+            article.save()
             return redirect("article-list")
 
 class ArticleDetailView(View):
     def get(self, request, slug):
         article = get_object_or_404(Article, slug=slug,status="published")
-        return render(request, "articles/detail.html",context={"article": article})
+        related_articles = Article.objects.filter(category=article.category, status="published").exclude(id=article.id)[:5]
+        return render(request, "articles/detail.html",context={"article": article, "related_articles": related_articles})
 
-class ArticleDeleteView(View):
-    def post(self, request, slug):
-        article = get_object_or_404(Article, slug=slug)
-        article.delete()
-        return redirect("article-list")
-
-class ArticleUpdateView(View):
+class ArticleDeleteView(LoginRequiredMixin,View):
     def get(self, request, slug):
         article = get_object_or_404(Article, slug=slug)
-        form = ArticleForm(instance=article)
-        return render(request,"articles/update.html",context={"form": form, "article": article})
+        if article.author == request.user:
+            article.delete()
+            return redirect("article-list")
+        else:
+            messages.error(request,"Siz maqola egasi emassiz maqolani o'chirishga ruhsat yo'q")
+            return render(request, "articles/detail.html",context={"article": article})
 
     def post(self, request, slug):
         article = get_object_or_404(Article, slug=slug)
-        form = ArticleForm(request.POST, request.FILES, instance=article)
-        if form.is_valid():
-            form.save()
+        if article.author == request.user:
+            article.delete()
+            return redirect("article-list")
+        else:
+            messages.error(request,"Siz maqola egasi emassiz maqolani o'chirishga ruhsat yo'q")
+            return render(request, "articles/detail.html",context={"article": article})
+
+
+class ArticleUpdateView(LoginRequiredMixin,View):
+    def get(self, request, slug):
+        article = get_object_or_404(Article, slug=slug)
+        if article.author == request.user:
+            form = ArticleForm(instance=article)
+            return render(request,"articles/update.html",context={"form": form, "article": article})
+
+        else:
             return redirect("article-list")
 
-        return render(request,"articles/update.html",context={"form": form,"article": article})
+    def post(self, request, slug):
+        article = get_object_or_404(Article, slug=slug)
+        if article.author == request.user:
+            form = ArticleForm(request.POST, request.FILES, instance=article)
+            if form.is_valid():
+                article = form.save(commit=False)
+                article.author = article.author
+                article.save()
+                return redirect("article-list")
+
+            return render(request,"articles/update.html",context={"form": form,"article": article})
+        else:
+            return redirect("article-list")
 
 class CategoryNews(View):
     def get(self, request, slug):

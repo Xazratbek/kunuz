@@ -26,14 +26,6 @@
         </div>
 
         <div class="form-group">
-            <label for="{{ form.author.id_for_label }}">Muallif</label>
-            {{ form.author }}
-            {% if form.author.errors %}
-                <span class="form-error">{{ form.author.errors }}</span>
-            {% endif %}
-        </div>
-
-        <div class="form-group">
             <label for="{{ form.status.id_for_label }}">Holati</label>
             {{ form.status }}
             {% if form.status.errors %}
@@ -54,9 +46,168 @@
             <a href="{% url 'article-detail' article.slug %}" class="btn btn-secondary">Bekor qilish</a>
         </div>
     </form>
+
+    {{ form.media }}
 </div>
 
 <style>
+    .form-container {
+        max-width: 800px;
+        margin: 0 auto;
+        animation: fadeIn 0.6s ease;
+    }
+
+    .form-header {
+        margin-bottom: 40px;
+        text-align: center;
+    }
+
+    .form-header h1 {
+        font-size: 32px;
+        font-weight: 700;
+        margin-bottom: 8px;
+        color: var(--text-main);
+    }
+
+    .form-header p {
+        color: var(--text-muted);
+        font-size: 14px;
+        max-width: 500px;
+        margin: 0 auto;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .article-form {
+        max-width: 100%;
+    }
+
+    .form-error {
+        display: block;
+        color: #fca5a5;
+        font-size: 13px;
+        margin-top: 6px;
+    }
+
+    .form-group {
+        margin-bottom: 24px;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        color: var(--text-main);
+        font-weight: 500;
+        font-size: 15px;
+    }
+
+    .form-group input,
+    .form-group select {
+        width: 100%;
+        padding: 10px 14px;
+        background: var(--bg-glass);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        color: var(--text-main);
+        font-family: 'IBM Plex Sans', sans-serif;
+        transition: all 0.3s ease;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus {
+        outline: none;
+        border-color: var(--accent);
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+
+    .django_ckeditor_5 {
+        width: 100%;
+    }
+
+    .ck-editor__main {
+        min-height: 450px;
+    }
+
+    .ck-editor__editable {
+        min-height: 450px;
+        background: var(--bg-glass) !important;
+        color: var(--text-main) !important;
+        border: 1px solid var(--border) !important;
+        border-top: none !important;
+        border-radius: 0 0 8px 8px !important;
+        padding: 16px !important;
+        font-family: 'IBM Plex Sans', sans-serif !important;
+        font-size: 15px !important;
+        line-height: 1.6 !important;
+    }
+
+    .ck.ck-editor {
+        border-radius: 8px !important;
+        overflow: hidden;
+    }
+
+    .ck.ck-toolbar {
+        background: rgba(15, 23, 42, 0.9) !important;
+        border: 1px solid var(--border) !important;
+        border-radius: 8px 8px 0 0 !important;
+        padding: 12px !important;
+    }
+
+    .ck-toolbar__items .ck-button {
+        color: var(--text-muted) !important;
+        transition: all 0.2s ease !important;
+    }
+
+    .ck-toolbar__items .ck-button:hover {
+        background: rgba(37, 99, 235, 0.2) !important;
+        color: var(--accent) !important;
+    }
+
+    .ck-toolbar__items .ck-button.ck-on {
+        background: rgba(37, 99, 235, 0.3) !important;
+        color: var(--accent) !important;
+    }
+
+    .ck-toolbar__separator {
+        background: rgba(255, 255, 255, 0.1) !important;
+    }
+
+    .ck-dropdown__panel {
+        background: rgba(15, 23, 42, 0.95) !important;
+        border: 1px solid var(--border) !important;
+        border-radius: 6px !important;
+    }
+
+    .ck-list__item {
+        color: var(--text-main) !important;
+    }
+
+    .ck-list__item:hover {
+        background: rgba(37, 99, 235, 0.2) !important;
+    }
+
+    .btn {
+        padding: 12px 24px;
+        border: none;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-size: 15px;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, var(--accent), #1d4ed8);
+        color: white;
+        flex: 1;
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 20px rgba(37, 99, 235, 0.3);
+    }
+
     .form-actions {
         display: flex;
         gap: 12px;
